@@ -1,1 +1,33 @@
-
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flight Radar｜機票價格追蹤</title>
+<style>
+:root{color-scheme:dark;--bg:#08111f;--panel:#111f32;--line:#2b3e56;--text:#edf5ff;--muted:#9fb4cf;--blue:#62a9ff;--green:#58dfaa;--gold:#ffc86a}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top right,#183254,var(--bg) 50%);font:15px/1.55 system-ui,"Noto Sans TC",sans-serif;color:var(--text)}main{max-width:1100px;margin:auto;padding:28px 18px 70px}header{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}h1{font-size:30px;margin:2px 0}h2{font-size:20px;margin:0 0 12px}p{margin:5px 0}.muted,small{color:var(--muted)}.eyebrow{color:var(--blue);letter-spacing:2px;font-size:12px}.pill{border:1px solid #b78a3e;color:var(--gold);border-radius:999px;padding:5px 12px;font-size:12px}.notice{margin:22px 0;padding:14px 16px;border:1px solid #795b2e;background:#382b18;border-radius:12px;color:#ffdda2}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat,.panel,.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}.stat strong{font-size:26px;display:block}.panel{margin-top:18px}.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin:16px 0}label{display:grid;gap:5px;color:var(--muted);font-size:13px}select,input,button{border-radius:9px;border:1px solid #39516d;background:#0a1728;color:var(--text);padding:10px;font:inherit}button{background:#2364b6;border:0;cursor:pointer;font-weight:650}button:hover{background:#307ad7}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card h3{font-size:18px;margin:0}.route{display:flex;justify-content:space-between;align-items:center;gap:8px}.price{font-size:26px;font-weight:750;margin:12px 0 0}.tag{font-size:12px;border:1px solid #41668b;border-radius:999px;padding:3px 9px;color:#b9d8ff}.details{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.details div{border-top:1px solid var(--line);padding-top:7px}.details b{display:block}.under{color:var(--green)}.over{color:var(--gold)}.empty{padding:26px;text-align:center;border:1px dashed var(--line);border-radius:10px;color:var(--muted)}footer{color:var(--muted);margin-top:22px;font-size:12px}@media(max-width:680px){.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}.cards{grid-template-columns:1fr}h1{font-size:25px}}
+</style>
+</head>
+<body><main>
+<header><div><div class="eyebrow">FLIGHT RADAR · PRICE WATCH</div><h1>✈️ 智慧機票價格雷達</h1><p class="muted">多航線監控 · 預算篩選 · 降價追蹤</p></div><span class="pill">展示模式 · 尚未連接報價 API</span></header>
+<div class="notice">⚠️ 本頁所有票價、日期與降幅均為<strong>虛構示範資料</strong>，不可用於訂票或判斷真實優惠。下一階段才會串接合法的真實報價來源。</div>
+<section class="stats"><div class="stat"><small>示範監控航線</small><strong id="route-count">0</strong></div><div class="stat"><small>低於預算（示範）</small><strong id="cheap-count">0</strong></div><div class="stat"><small>資料狀態</small><strong style="font-size:18px;color:var(--gold)">尚未連線</strong></div></section>
+<section class="panel"><h2>🔎 航線篩選</h2><div class="toolbar"><label>目的地<select id="destination"><option value="all">全部目的地</option></select></label><label>最高預算（新台幣）<input id="budget" type="number" min="0" step="500" value="8000"></label><label>航班類型<select id="flight-type"><option value="all">全部</option><option value="direct">直飛</option><option value="transfer">轉機</option></select></label><button id="apply">套用篩選</button></div><p class="muted">預算與篩選條件只在目前瀏覽器生效，重新開啟頁面會恢復預設值。</p></section>
+<section class="panel"><h2>🏆 航線價格排行榜</h2><p class="muted">以下僅示範未來的比較介面；票價均非即時報價。</p><div class="cards" id="cards"></div></section>
+<section class="panel"><h2>📈 歷史價格追蹤</h2><div class="empty">等待串接真實機票報價 API 並累積歷史資料後，才會顯示價格曲線及降價趨勢。</div></section>
+<section class="panel"><h2>🔔 降價通知</h2><div class="empty">Telegram／LINE 通知尚未啟用。未來僅在取得可驗證的真實票價、符合預算與條件時發送提醒。</div></section>
+<footer>Flight Radar v0.1 · GitHub Pages 靜態展示版 · 本網站目前不提供訂票、即時報價或價格保證。</footer>
+</main><script>
+'use strict';
+const flights=[
+{from:'TPE',to:'FUK',city:'福岡',price:5480,baseline:6300,date:'示範日期',direct:true,airline:'示範航空 A'},
+{from:'TPE',to:'NRT',city:'東京',price:6280,baseline:7700,date:'示範日期',direct:true,airline:'示範航空 B'},
+{from:'TPE',to:'SGN',city:'胡志明市',price:7190,baseline:7800,date:'示範日期',direct:true,airline:'示範航空 C'},
+{from:'TPE',to:'HAN',city:'河內',price:7690,baseline:8500,date:'示範日期',direct:true,airline:'示範航空 D'},
+{from:'TPE',to:'ICN',city:'首爾',price:8390,baseline:9500,date:'示範日期',direct:true,airline:'示範航空 E'},
+{from:'TPE',to:'BKK',city:'曼谷',price:8990,baseline:10100,date:'示範日期',direct:false,airline:'示範航空 F'}
+];
+const $=id=>document.getElementById(id),nt=n=>'NT$ '+n.toLocaleString('zh-TW');
+for(const f of flights){const o=document.createElement('option');o.value=f.to;o.textContent=f.city+' ('+f.to+')';$('destination').append(o)}
+function render(){const budget=Number($('budget').value),dest=$('destination').value,type=$('flight-type').value;const filtered=flights.filter(f=>(dest==='all'||f.to===dest)&&(type==='all'||(type==='direct'&&f.direct)||(type==='transfer'&&!f.direct))).sort((a,b)=>a.price-b.price);$('route-count').textContent=flights.length;$('cheap-count').textContent=flights.filter(f=>Number.isFinite(budget)&&budget>0&&f.price<=budget).length;const el=$('cards');el.replaceChildren();if(!filtered.length){el.innerHTML='<div class="empty">沒有符合篩選條件的示範航線。</div>';return}for(const f of filtered){const pct=Math.round((f.baseline-f.price)/f.baseline*100);const card=document.createElement('article');card.className='card';card.innerHTML=`<div class="route"><h3>${f.from} → ${f.to} · ${f.city}</h3><span class="tag">${f.direct?'直飛':'轉機'}</span></div><div class="price">${nt(f.price)}</div><small>來回經濟艙 · 虛構示範票價</small><div class="details"><div><small>航空公司</small><b>${f.airline}</b></div><div><small>日期</small><b>${f.date}</b></div><div><small>相對示範基準價</small><b class="under">低 ${pct}%</b></div><div><small>預算比較</small><b class="${budget>0&&f.price<=budget?'under':'over'}">${budget>0&&f.price<=budget?'低於預算':'超過預算／未設定'}</b></div></div><small>不含真實稅費、行李與訂票條件；不可購買。</small>`;el.append(card)}}
+$('apply').addEventListener('click',render);render();
+</script></body></html>
